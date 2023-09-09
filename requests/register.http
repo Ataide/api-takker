@@ -1,8 +1,0 @@
-GET http://localhost/api/user HTTP/1.1
-content-type: application/json  
-
-{
-    "name": "sample",
-    "email": "ataide.bastos@gmail.com",
-    "password": "password"
-}

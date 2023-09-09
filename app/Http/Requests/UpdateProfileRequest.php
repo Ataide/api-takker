@@ -11,7 +11,7 @@ class UpdateProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'amz_link' => ['string', 'nullable'],
+            'tap_interval' => ['numeric'],
+            'auto_stop_after_crash' => ['boolean'],
+            'auto_resume_search' => ['boolean'],
+            'offer_lead_time' => ['numeric'],
+            'minimum_base_paytype' => ['string'],
+            'minimum_base_payvalue' => ['numeric'],
+            'offer_duration_start' => ['string'],
+            'offer_duration_end' => ['string'],
+            'working' => ['boolean'],
+            'timezone' => ['string'],
         ];
     }
 }

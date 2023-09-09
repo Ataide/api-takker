@@ -1,14 +1,17 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Swagger with Laravel",
+        "title": "Takker Swagger Documentation",
         "version": "1.0.0"
     },
     "paths": {
         "/api/register": {
             "post": {
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Register a new user",
-                "operationId": "18235ea6963e661c49bf381065779d6a",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
                 "parameters": [
                     {
                         "name": "name",
@@ -36,24 +39,1004 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "User's password confirmation",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "This field is a token that will be used to authenticate"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "integer",
+                                            "example": "The email has already been taken."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The email has already been taken."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login a user with credentials",
+                "operationId": "222b2625838e3c57e017987f73598fda",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User's password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User authentication successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "This field is a token that will be used to authenticate"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "integer",
+                                            "example": "These credentials do not match our records."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "These credentials do not match our records."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get user profile",
+                "description": "Returns user profile",
+                "operationId": "37f901c9e1d2391b1cc4e4fa43cb91e8",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/update-profile": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update a current user profile and Settings",
+                "operationId": "update",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "String",
+                                            "example": "Profile updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "integer",
+                                            "example": "The tap interval field must be a number."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "tap_interval": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The tap interval field must be a number"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/amz-sync": {
+            "post": {
+                "tags": [
+                    "Amazon Sync"
+                ],
+                "summary": "User sync with amazon account",
+                "operationId": "d4b0fc222804095768dc3a951ccff99e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "body",
+                                "required": [
+                                    "link"
+                                ],
+                                "properties": {
+                                    "link": {
+                                        "type": "string",
+                                        "example": "Magical link from Amazon account"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Amazon Sync successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "title": "url",
+                                            "type": "integer",
+                                            "example": "The link field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "link": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The link field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get products list",
+                "description": "Returns a list of products",
+                "operationId": "1bfaa78d1c2c3848ab8165c5dadcad3e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product.",
+                "operationId": "storeProduct",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "String",
+                                            "example": "Product created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "integer",
+                                            "example": "The tap interval field must be a number."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "tap_interval": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The tap interval field must be a number"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update existing product",
+                "description": "Returns updated product data",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product successfully updated"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete existing product",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "User registered successfully"
+                    "204": {
+                        "description": "Successful operation"
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
         }
     },
     "components": {
+        "schemas": {
+            "OrderStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "Pending",
+                    "Active",
+                    "Inactive",
+                    "Rejected"
+                ]
+            },
+            "AmzTokens": {
+                "title": "AmzTokens",
+                "description": "A amazon token taken from the Bot.",
+                "properties": {
+                    "amz_token": {
+                        "title": "Amazon Token",
+                        "description": "",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "amz_refresh_token": {
+                        "title": "Amazon Refresh Token",
+                        "description": "",
+                        "type": "string",
+                        "example": ""
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AmzTokens"
+                }
+            },
+            "Order": {
+                "title": "Order",
+                "description": "Order Model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "title": "user_id",
+                        "description": "user_id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2
+                    },
+                    "status": {
+                        "title": "duration",
+                        "description": "Product duration",
+                        "type": "string",
+                        "example": "Week"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Order"
+                }
+            },
+            "Product": {
+                "title": "Product",
+                "description": "Product Model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "Product name",
+                        "type": "string",
+                        "example": "One-Time Payment"
+                    },
+                    "description": {
+                        "title": "description",
+                        "description": "Product description",
+                        "type": "string",
+                        "example": "One full week of premium services."
+                    },
+                    "price": {
+                        "title": "price",
+                        "description": "Product price",
+                        "type": "number",
+                        "format": "float",
+                        "example": "30"
+                    },
+                    "duration": {
+                        "title": "duration",
+                        "description": "Product duration",
+                        "type": "string",
+                        "example": "Week"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Product"
+                }
+            },
+            "Profile": {
+                "title": "Profile",
+                "description": "Profile data has created when the user make a registration. This property have all properties inside the Settings and Preferences",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "title": "user_id",
+                        "description": "user_id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2
+                    },
+                    "amz_token": {
+                        "title": "Amazon Token",
+                        "description": "Amazon Token retrieved before login with Amazon Account",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "tap_interval": {
+                        "title": "Tap interval",
+                        "description": "In Seconds",
+                        "example": "6.2"
+                    },
+                    "auto_stop_after_crash": {
+                        "title": "Auto stop after crash",
+                        "description": "Auto stop after crash",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "auto_resume_search": {
+                        "title": "Auto resume search",
+                        "description": "Auto resume search",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "offer_lead_time": {
+                        "title": "Offer Lead Time",
+                        "description": "In Minutes",
+                        "example": "15"
+                    },
+                    "minimum_base_paytype": {
+                        "title": "Mininum Base Pay Type",
+                        "description": "Mininum Base Pay Type",
+                        "type": "string",
+                        "example": "Per Offer"
+                    },
+                    "minimum_base_payvalue": {
+                        "title": "Minimum Base Pay value",
+                        "description": "In dollars",
+                        "example": "15"
+                    },
+                    "offer_duration_start": {
+                        "title": "Start Offer Duration",
+                        "description": "",
+                        "type": "string",
+                        "example": "1:00"
+                    },
+                    "offer_duration_end": {
+                        "title": "End Offer Duration",
+                        "description": "",
+                        "type": "string",
+                        "example": "2:45"
+                    },
+                    "working": {
+                        "title": "Bot Working",
+                        "description": "Enable bot working",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "timezone": {
+                        "title": "TimeZone in Profile",
+                        "description": "",
+                        "type": "string",
+                        "example": "America/Brasilia"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "deleted_at": {
+                        "title": "Deleted at",
+                        "description": "Deleted at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Profile"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "title": "Username",
+                        "description": "Username",
+                        "type": "string",
+                        "format": "int64",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "title": "User Email",
+                        "description": "Email address",
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "email_verified_at": {
+                        "title": "Email verified",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "null"
+                    },
+                    "created_at": {
+                        "title": "CreatedAt",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "UpdatedAt",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "profile": {
+                        "$ref": "#/components/schemas/Profile"
+                    },
+                    "amz_tokens": {
+                        "title": "AmazonTokens",
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AmzTokens"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            },
+            "AuthLoginRequest": {
+                "title": "AuthLoginRequest",
+                "description": "Login request body data",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "email",
+                        "type": "string",
+                        "example": "john@example.com"
+                    },
+                    "password": {
+                        "title": "password",
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AuthLoginRequest"
+                }
+            },
+            "AuthRegisterRequest": {
+                "title": "AuthRegisterRequest",
+                "description": "Register request body data",
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "title": "email",
+                        "type": "string",
+                        "example": "john@example.com"
+                    },
+                    "password": {
+                        "title": "password",
+                        "type": "string",
+                        "example": "123456"
+                    },
+                    "password_confirmation": {
+                        "title": "password_confirmation",
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AuthRegisterRequest"
+                }
+            },
+            "CreateOrUpdateProductRequest": {
+                "title": "CreateOrUpdateProductRequest",
+                "description": "Product Request",
+                "required": [
+                    "name",
+                    "description",
+                    "price"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "Product name",
+                        "type": "string",
+                        "example": "One-Time Payment"
+                    },
+                    "description": {
+                        "title": "description",
+                        "description": "Product description",
+                        "type": "string",
+                        "example": "One full week of premium services."
+                    },
+                    "price": {
+                        "title": "price",
+                        "description": "Product price",
+                        "type": "number",
+                        "format": "float",
+                        "example": "30"
+                    },
+                    "duration": {
+                        "title": "duration",
+                        "description": "Product duration",
+                        "type": "string",
+                        "example": "Week"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CreateOrUpdateProductRequest"
+                }
+            },
+            "UpdateProfileRequest": {
+                "title": "UpdateProfileRequest",
+                "description": "Update Profile request body data",
+                "properties": {
+                    "amz_token": {
+                        "title": "Amazon Token",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "tap_interval": {
+                        "title": "Tap interval",
+                        "description": "In Seconds",
+                        "type": "number",
+                        "format": "float",
+                        "example": "6.2"
+                    },
+                    "auto_stop_after_crash": {
+                        "title": "Auto stop after crash",
+                        "description": "Auto stop after crash",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "auto_resume_search": {
+                        "title": "Auto resume search",
+                        "description": "Auto resume search",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "offer_lead_time": {
+                        "title": "Offer Lead Time",
+                        "description": "In Minutes",
+                        "type": "number",
+                        "example": "15"
+                    },
+                    "minimum_base_paytype": {
+                        "title": "Mininum Base Pay Type",
+                        "description": "Mininum Base Pay Type",
+                        "type": "string",
+                        "example": "Per Offer"
+                    },
+                    "minimum_base_payvalue": {
+                        "title": "Minimum Base Pay value",
+                        "description": "In dollars",
+                        "type": "number",
+                        "example": "15"
+                    },
+                    "offer_duration_start": {
+                        "title": "Start Offer Duration",
+                        "description": "",
+                        "type": "string",
+                        "example": "1:00"
+                    },
+                    "offer_duration_end": {
+                        "title": "End Offer Duration",
+                        "description": "",
+                        "type": "string",
+                        "example": "2:45"
+                    },
+                    "working": {
+                        "title": "Bot Working",
+                        "description": "Enable bot working",
+                        "type": "boolean",
+                        "example": "false"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UpdateProfileRequest"
+                }
+            },
+            "ProductResource": {
+                "title": "ProductResource",
+                "description": "UserProfile resource",
+                "properties": {
+                    "message": {
+                        "title": "message",
+                        "description": "Simple message from api.",
+                        "type": "string",
+                        "example": "Success operation"
+                    },
+                    "data": {
+                        "title": "data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Product"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ProductResource"
+                }
+            },
+            "UserProfileResource": {
+                "title": "UserProfileResource",
+                "description": "UserProfile resource",
+                "properties": {
+                    "data": {
+                        "title": "data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserProfileResource"
+                }
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "bearerFormat": "JWT",
+                "bearerFormat": "token",
                 "scheme": "bearer"
             }
         }

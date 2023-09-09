@@ -20,41 +20,8 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
 
-    /**
-     * @OA\Post(
-     *     path="/api/register",
-     *     summary="Register a new user",
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="query",
-     *         description="User's name",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="email",
-     *         in="query",
-     *         description="User's email",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="password",
-     *         in="query",
-     *         description="User's password",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(response="201", description="User registered successfully"),
-     *     @OA\Response(response="422", description="Validation errors")
-     * )
-     */
     public function store(Request $request): JsonResponse
     {
-        if (!$request->expectsJson()) {
-            return response()->json(['message' => 'Only JSON requests are allowed, Define Accept header maybe fix this problem'], 406);
-        }
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],

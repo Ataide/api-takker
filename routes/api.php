@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserProfile;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/register', [AuthController::class, 'register'])->name('user.register');
+Route::post('/login', [AuthController::class, 'login'])->name('user.login');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/me', [UserProfile::class, "index"])->name('user.profile');
+    Route::post('/update-profile', [UserProfile::class, "update"])->name('user.update');
+    Route::post('/sync-amz', [UserProfile::class, "sync"])->name('user.sync');
+
+    Route::apiResource('/products', ProductController::class);
+
 });
