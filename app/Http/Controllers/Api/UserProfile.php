@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckoutRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserSyncRequest;
 use App\Models\AmzTokens;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\Profile;
 use Auth;
 use Illuminate\Http\Request;
 use Response;
+use Stripe\Stripe;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserProfile extends Controller
 {
@@ -37,7 +43,7 @@ class UserProfile extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user_profile = $user->load(['profile', 'amz_tokens']);
+        $user_profile = $user->load(['profile', 'amz_tokens', 'orders']);
         return $user_profile;
     }
 
@@ -114,14 +120,6 @@ class UserProfile extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    /**
      * @OA\Post(
      *     path="/api/amz-sync",
      *     tags={"Amazon Sync"},
@@ -183,5 +181,87 @@ class UserProfile extends Controller
         $amzTokens->save();
 
         return Response::json(['success' => "Successfully", "link" => $link, 'amzTokens' => $amzTokens]);
+    }
+
+    public function checkout(CheckoutRequest $request)
+    {
+        $request->validated();
+
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+
+        $product_id = request()->only('product_id');
+
+        $user = Auth::user();
+
+        $product = Product::find($product_id)->first();
+
+        $lineItems = [];
+
+        $lineItems[] = [
+            'price_data' => [
+                'currency' => 'usd',
+                'product_data' => [
+                    'name' => $product->name,
+                    'description' => $product->description,
+
+                ],
+                'unit_amount' => $product->price * 100,
+            ],
+            'quantity' => 1,
+        ];
+
+        $session = \Stripe\Checkout\Session::create([
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('checkout.success', [], true) . "?session_id={CHECKOUT_SESSION_ID}",
+            'cancel_url' => route('checkout.cancel', [], true),
+        ]);
+
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->product_id = $product->id;
+        $order->status = OrderStatusEnum::Pending;
+        $order->total_price = $product->price;
+        $order->session_id = $session->id;
+        $order->save();
+
+        return Response::json(['message' => "Successfully", "url" => $session->url]);
+
+    }
+
+    public function success(Request $request)
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $sessionId = $request->get('session_id');
+
+        try {
+            $session = \Stripe\Checkout\Session::retrieve($sessionId);
+
+            if (!$session) {
+                throw new NotFoundHttpException();
+            }
+
+            $order = Order::where('session_id', $session->id)->first();
+            if (!$order) {
+                throw new NotFoundHttpException();
+            }
+
+            if ($order->status === OrderStatusEnum::Pending) {
+                $order->status = OrderStatusEnum::Active;
+                $order->save();
+            }
+
+            return Response::json(['message' => "Successfully", "session_id" => $session->id, "payment_status" => $session->payment_status, 'status' => $session->status]);
+
+            // return view('product.checkout-success', compact('customer'));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException();
+        }
+
+    }
+
+    public function cancel()
+    {
+
     }
 }
