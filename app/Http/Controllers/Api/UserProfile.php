@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Profile;
 use Auth;
+use Http;
 use Illuminate\Http\Request;
 use Response;
 use Stripe\Stripe;
@@ -43,7 +44,7 @@ class UserProfile extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user_profile = $user->load(['profile', 'amz_tokens', 'orders']);
+        $user_profile = $user->load(['profile']);
         return $user_profile;
     }
 
@@ -173,10 +174,14 @@ class UserProfile extends Controller
 
         $amzTokens = new AmzTokens();
 
-        $fake_response = ['amzToken' => 'amzTokenFakeFromRequest', "amzRefreshToken" => "amzRefreshTokenFakeFromRequest"];
+        $bot_response = Http::post('https://amazon-bot.natanieldev.space/client/register', [
+            'link' => $link,
+        ]);
 
-        $amzTokens->amz_token = $fake_response['amzToken'];
-        $amzTokens->amz_refresh_token = $fake_response['amzRefreshToken'];
+        $jsonData = $bot_response->json();
+
+        $amzTokens->amz_token = $jsonData['amzAccessToken'];
+        $amzTokens->amz_refresh_token = $jsonData['amzRefreshToken'];
         $amzTokens->user_id = Auth::user()->id;
         $amzTokens->save();
 

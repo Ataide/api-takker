@@ -364,6 +364,34 @@
                 }
             }
         },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders",
+                "description": "A list of orders from user. If logged user is a administrator, all order will be returned; if logged user is not admin, only user order will be returned",
+                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -603,11 +631,30 @@
                         "format": "int64",
                         "example": 2
                     },
+                    "product_id": {
+                        "title": "product_id",
+                        "description": "product_id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2
+                    },
                     "status": {
-                        "title": "duration",
-                        "description": "Product duration",
+                        "title": "status",
+                        "description": "Order status",
                         "type": "string",
-                        "example": "Week"
+                        "example": "pending"
+                    },
+                    "total_price": {
+                        "title": "total_price",
+                        "description": "total_price",
+                        "type": "number",
+                        "example": 2
+                    },
+                    "session_id": {
+                        "title": "session_id",
+                        "description": "session_id given by stripe api",
+                        "type": "string",
+                        "example": 2
                     }
                 },
                 "type": "object",

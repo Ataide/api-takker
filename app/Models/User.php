@@ -55,13 +55,23 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function amz_tokens()
+    public function amzTokens()
     {
         return $this->hasMany(AmzTokens::class);
     }
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    public function filters()
+    {
+        return $this->hasOne(Filter::class);
     }
 
 }

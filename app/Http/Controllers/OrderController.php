@@ -11,14 +11,14 @@ class OrderController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/api/orders",*
+     *      path="/api/orders",
      *      tags={"Orders"},
      *      summary="Get orders",
      *      description="A list of orders from user. If logged user is a administrator, all order will be returned; if logged user is not admin, only user order will be returned",
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/User")
+     *          @OA\JsonContent(ref="#/components/schemas/Order")
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -43,14 +43,6 @@ class OrderController extends Controller
 
         return $orders;
 
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**

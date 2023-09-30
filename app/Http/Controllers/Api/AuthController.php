@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Filter;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -104,6 +105,8 @@ class AuthController extends Controller
         ]);
 
         $user_profile = Profile::create(['user_id' => $user->id]);
+
+        $user_filters = Filter::create(['user_id' => $user->id]);
 
         Auth::login($user);
 

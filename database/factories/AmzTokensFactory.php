@@ -17,7 +17,9 @@ class AmzTokensFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amz_token' => fake()->uuid(),
+            'amz_refresh_token' => fake()->uuid(),
         ];
+
     }
 }
